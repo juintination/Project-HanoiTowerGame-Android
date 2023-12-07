@@ -5,7 +5,6 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,7 +13,7 @@ public class MainActivity extends AppCompatActivity {
 
     private LinearLayout space1, space2, space3;
     private LinearLayout pole1, pole2, pole3;
-    private RelativeLayout layout1, layout2, layout3;
+    private LinearLayout layout1, layout2, layout3;
     private View selectedDisk;
     private LinearLayout selectedSpace;
 
@@ -120,33 +119,8 @@ public class MainActivity extends AppCompatActivity {
         setPoleHeight(pole3, pole3Height);
 
         if (space3.getChildCount() == 3) {
-            if (isStackedInOrder(space3)) {
-                Toast.makeText(this, "게임이 종료되었습니다!", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "잘못된 순서입니다.", Toast.LENGTH_SHORT).show();
-            }
+            Toast.makeText(this, "게임이 종료되었습니다!", Toast.LENGTH_SHORT).show();
         }
-    }
-
-    private boolean isStackedInOrder(LinearLayout space) {
-        int childCount = space.getChildCount();
-        if (childCount != 3) {
-            return false;
-        }
-
-        int[] diskOrder = {R.dimen.disk_margin_1, R.dimen.disk_margin_2, R.dimen.disk_margin_3};
-
-        for (int i = 0; i < childCount; i++) {
-            View disk = space.getChildAt(i);
-            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) disk.getLayoutParams();
-            int expectedMarginDimen = diskOrder[i];
-            int expectedMargin = getResources().getDimensionPixelSize(expectedMarginDimen);
-            if (layoutParams.leftMargin != expectedMargin || layoutParams.rightMargin != expectedMargin) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     private void setPoleHeight(LinearLayout pole, int height) {
@@ -174,14 +148,31 @@ public class MainActivity extends AppCompatActivity {
 
     private void moveSelectedDiskToSpace(LinearLayout destinationSpace) {
         if (selectedDisk != null && selectedSpace != null) {
-            selectedSpace.removeView(selectedDisk);
-            destinationSpace.addView(selectedDisk, 0);
+            int selectedDiskIndex = selectedSpace.indexOfChild(selectedDisk);
 
+            if (destinationSpace.getChildCount() == 0 || isDiskSmallerThanTop(destinationSpace, selectedDiskIndex)) {
+                selectedSpace.removeView(selectedDisk);
+                destinationSpace.addView(selectedDisk, 0);
+
+                updatePoleHeight();
+            } else {
+                Toast.makeText(this, "큰 원판은 작은 원판 위에 놓을 수 없습니다.", Toast.LENGTH_SHORT).show();
+            }
             selectedDisk = null;
             selectedSpace = null;
-
-            updatePoleHeight();
         }
+    }
+
+    private boolean isDiskSmallerThanTop(LinearLayout space, int diskIndex) {
+        if (space.getChildCount() == 0 || diskIndex >= space.getChildCount()) {
+            return true;
+        }
+
+        View topDisk = space.getChildAt(0);
+        LinearLayout.LayoutParams topDiskParams = (LinearLayout.LayoutParams) topDisk.getLayoutParams();
+        LinearLayout.LayoutParams selectedDiskParams = (LinearLayout.LayoutParams) selectedDisk.getLayoutParams();
+
+        return selectedDiskParams.leftMargin >= topDiskParams.leftMargin && selectedDiskParams.rightMargin >= topDiskParams.rightMargin;
     }
 }
 
