@@ -14,7 +14,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="B989003 권덕재 - 게임 규칙"
+            android:text="하노이 탑 게임 규칙"
             android:lines="2"
             android:gravity="center" />
 
@@ -145,3 +145,4 @@
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>
+

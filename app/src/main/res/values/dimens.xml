@@ -1,7 +1,9 @@
 <resources>
     <dimen name="pole_height">400dp</dimen>
     <dimen name="pole_width">20dp</dimen>
-    <color name="disk_color">#0000FF</color>
+    <color name="disk_color_1">#FF0000</color>
+    <color name="disk_color_2">#00FF00</color>
+    <color name="disk_color_3">#0000FF</color>
     <dimen name="disk_height">20dp</dimen>
     <dimen name="disk_margin_1">30dp</dimen>
     <dimen name="disk_margin_2">25dp</dimen>

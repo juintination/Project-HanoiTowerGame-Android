@@ -1,11 +1,12 @@
 package com.cookandroid.hanoitowerproject;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -16,6 +17,7 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout layout1, layout2, layout3;
     private View selectedDisk;
     private LinearLayout selectedSpace;
+    private AlertDialog.Builder builder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +36,17 @@ public class MainActivity extends AppCompatActivity {
         resetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                initDisk();
+                builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("초기화");
+                builder.setMessage("원판 위치를 초기화하시겠습니까?");
+                builder.setPositiveButton("네", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        initDisk();
+                    }
+                });
+                builder.setNegativeButton("아니요", null);
+                builder.show();
             }
         });
 
@@ -70,7 +82,11 @@ public class MainActivity extends AppCompatActivity {
         stackDisk(space1, 2);
         stackDisk(space1, 1);
 
-        Toast.makeText(this, "하노이탑 게임을 시작합니다!", Toast.LENGTH_SHORT).show();
+        builder = new AlertDialog.Builder(this);
+        builder.setTitle("게임 시작");
+        builder.setMessage("하노이탑 게임을 시작합니다!");
+        builder.setPositiveButton("확인", null);
+        builder.show();
     }
 
     private void initDisk() {
@@ -87,7 +103,11 @@ public class MainActivity extends AppCompatActivity {
 
         updatePoleHeight();
 
-        Toast.makeText(this, "원판 위치가 초기화되었습니다.", Toast.LENGTH_SHORT).show();
+        builder = new AlertDialog.Builder(this);
+        builder.setTitle("초기화 완료");
+        builder.setMessage("원판 위치가 초기화되었습니다.");
+        builder.setPositiveButton("확인", null);
+        builder.show();
     }
 
     private void stackDisk(LinearLayout space, int diskNum) {
@@ -101,7 +121,16 @@ public class MainActivity extends AppCompatActivity {
         int margin = getResources().getDimensionPixelSize(marginDimen);
         layoutParams.setMargins(margin, 0, margin, 0);
 
-        disk.setBackgroundColor(getResources().getColor(R.color.disk_color));
+        int colorResId;
+        if (diskNum == 1) {
+            colorResId = R.color.disk_color_1;
+        } else if (diskNum == 2) {
+            colorResId = R.color.disk_color_2;
+        } else if (diskNum == 3) {
+            colorResId = R.color.disk_color_3;
+        } else return;
+
+        disk.setBackgroundColor(getResources().getColor(colorResId));
         space.addView(disk, 0, layoutParams);
         updatePoleHeight();
     }
@@ -119,7 +148,11 @@ public class MainActivity extends AppCompatActivity {
         setPoleHeight(pole3, pole3Height);
 
         if (space3.getChildCount() == 3) {
-            Toast.makeText(this, "게임이 종료되었습니다!", Toast.LENGTH_SHORT).show();
+            builder = new AlertDialog.Builder(this);
+            builder.setTitle("게임 종료");
+            builder.setMessage("게임이 종료되었습니다!");
+            builder.setPositiveButton("확인", null);
+            builder.show();
         }
     }
 
@@ -156,7 +189,11 @@ public class MainActivity extends AppCompatActivity {
 
                 updatePoleHeight();
             } else {
-                Toast.makeText(this, "큰 원판은 작은 원판 위에 놓을 수 없습니다.", Toast.LENGTH_SHORT).show();
+                builder = new AlertDialog.Builder(this);
+                builder.setTitle("에러");
+                builder.setMessage("큰 원판은 작은 원판 위에 놓을 수 없습니다.");
+                builder.setPositiveButton("확인", null);
+                builder.show();
             }
             selectedDisk = null;
             selectedSpace = null;
@@ -175,4 +212,3 @@ public class MainActivity extends AppCompatActivity {
         return selectedDiskParams.leftMargin >= topDiskParams.leftMargin && selectedDiskParams.rightMargin >= topDiskParams.rightMargin;
     }
 }
-
